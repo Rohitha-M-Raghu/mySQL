@@ -1,0 +1,151 @@
+Activity 1
+	Given a Student Database with Holding Student details
+
+	CREATE DATABASE StudentDatabase;
+
+Activity 2
+	Create table using the create table command for the above specified table
+	
+	CREATE TABLE StudentDetails (
+  		ID INT NOT NULL AUTO_INCREMENT,
+  		FirstName VARCHAR(50) NOT NULL,
+  		LastName VARCHAR(50) NOT NULL,
+  		Gender ENUM('Male', 'Female', 'Other') NOT NULL,
+  		Email VARCHAR(100) NOT NULL,
+  		YearOfBirth YEAR NOT NULL,
+  		PRIMARY KEY (ID)
+  		CONSTRAINT chk_email CHECK (Email LIKE '%@gmail.com')
+	);
+
+Activity 3
+	- Alter above table add new Column 'Year Of Admission'
+	- Alter above table change Column Name 'Year Of Birth' to 'Date Of Birth'
+(hint ensure the data type of the same to be 'Date')
+
+	ALTER TABLE StudentDetails
+	ADD COLUMN YearOfAdmission YEAR;
+
+	ALTER TABLE StudentDetails
+	CHANGE COLUMN YearOfBirth DateOfBirth Date;
+
+Activity 4
+ 	Insert Data into the above table in such a way that there are minimum of
+	- 2 students born in year 2000
+	- 5 students with same year of admission
+	- 2 students with same first name
+	- 2 students with same last name
+	- 2 students with same first and last name
+
+	INSERT INTO StudentDetails(FirstName, LastName, Gender, Email, DateOfBirth, YearOfAdmission)  
+	VALUES('Jane', 'Doe', 'Female', 'janedoe@gmail.com', '2001-01-07', '2021');
+
+Activity 5
+	Add New Column 'Branch' and 'Std' with appropriate data types and update entries for each column. Branch for students below 10th std would be ‘NA’
+
+	ALTER TABLE StudentDetails
+	ADD COLUMN Branch VARCHAR(10) DEFAULT 'NA',
+	ADD COLUMN Std INT(2) DEFAULT NULL;
+
+	UPDATE StudentDetails SET Branch = 'NA' WHERE Year(DateOfBirth) > 2011;
+	UPDATE StudentDetails SET Std = 10 WHERE Year(DateOfBirth) <= 2011;
+
+Activity 6
+	Find students count born in year 2000
+
+	SELECT COUNT(*)
+	FROM StudentDetails
+	WHERE YEAR(DateOfBirth) = 2000;
+
+	OR
+
+	SELECT COUNT(*)
+	FROM StudentDetails DateOfBirth LIKE '2000%';
+
+Activity 7
+	Group students based on year of admission along with number of students in each year
+
+	SELECT YearOfAdmission, COUNT(*) as StudentCount 
+	FROM StudentDetails 
+	GROUP BY YearOfAdmission;
+
+Activity 8
+	List number of students in each year of admission and also list them based on gender.
+
+	SELECT YearOfAdmission, Gender, COUNT(*) as StudentCount 
+	FROM StudentDetails 
+	GROUP BY YearOfAdmission, Gender;
+
+Activity 9
+	List number of students with same first name, last name and first and last name
+
+	SELECT FirstName, COUNT(*) as FirstNameCount 
+	FROM StudentDetails 
+	GROUP BY FirstName
+	HAVING COUNT(*) > 1;
+
+	SELECT LastName, COUNT(*) as LastNameCount 
+	FROM StudentDetails 
+	GROUP BY LastName
+	HAVING COUNT(*) > 1;
+
+	SELECT FirstName, LastName, COUNT(*) as NameCount 
+	FROM StudentDetails 
+	GROUP BY FirstName, LastName
+	HAVING COUNT(*) > 1;
+
+Activity 10
+	Find the year with the maximum and minimum number of students
+
+	SELECT YearOfAdmission, COUNT(*) as CountOfStudents 
+	FROM StudentDetails 
+	GROUP BY YearOfAdmission
+	ORDER BY CountOfStudents DESC
+	LIMIT 1;
+
+	SELECT YearOfAdmission, COUNT(*) as CountOfStudents 
+	FROM StudentDetails 
+	GROUP BY YearOfAdmission
+	ORDER BY CountOfStudents ASC
+	LIMIT 1;
+
+Activity 11
+	Order the students by DOB and list only the top 10 students.
+
+	SELECT FirstName, LastName, DateOfBirth 
+	FROM StudentDetails 
+	ORDER BY DateOfBirth 
+	LIMIT 10;
+
+DAY 5
+-----------------------------
+
+Student Table
+Student ID(PK)		FirstName 		LastName 		CourseID(FK)
+------------------------------------------------------------
+L0001				Jim				Black 			C002
+L0002				James			Hardman			A004
+L0003				Amanda			Holland			C002
+L0004				Simon			McCloud			S042		
+
+Course Table
+CourseID		CourseName
+-----------------------------
+A004			Accounts
+C002			Computing
+P301			History
+S042			Social Science
+
+	CREATE TABLE course (
+    CourseID CHAR(4) PRIMARY KEY,
+    CourseName VARCHAR(255)
+	);
+
+	CREATE TABLE student (
+    StudentID CHAR(5) PRIMARY KEY,
+    FirstName VARCHAR(255),
+    LastName VARCHAR(255),
+    CourseID CHAR(4),
+    FOREIGN KEY (CourseID) REFERENCES course(CourseID) ON DELETE CASCADE
+	);
+
+
